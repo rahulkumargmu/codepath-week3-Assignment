@@ -26,6 +26,7 @@ classDiagram
         +list~MenuItem~ items
         +add_item(item) None
         +filter_by_category(category) list~MenuItem~
+        +sort_by_popularity() list~MenuItem~
     }
 
     class Order {
@@ -47,7 +48,7 @@ classDiagram
 - **MenuItem** — one sellable food item described by its `name`, `price`,
   `category`, and `popularity_rating`.
 - **Menu** — the full collection of `MenuItem`s, with the ability to filter that
-  collection by `category`.
+  collection by `category` and sort it by `popularity_rating`.
 - **Order** — a single transaction holding the `MenuItem`s a user selected and
   able to compute their `total_cost`.
 

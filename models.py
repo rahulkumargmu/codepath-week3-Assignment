@@ -6,12 +6,10 @@ Four core classes (see bytebites_design.md):
                and can verify it is a genuine user.
 2. MenuItem  - one sellable food item; stores `name`, `price`,
                `category`, and `popularity_rating`.
-3. Menu      - the full collection of MenuItems; can filter by category.
+3. Menu      - the full collection of MenuItems; can filter by category
+               and sort by popularity.
 4. Order     - a single transaction; stores selected items and computes
                the total cost.
-
-These are scaffolds: constructors and simple container helpers work, while
-the three derived-logic methods are marked TODO for the next step.
 """
 
 from __future__ import annotations
@@ -44,8 +42,23 @@ class Menu:
         self.items.append(item)
 
     def filter_by_category(self, category: str) -> list[MenuItem]:
-        """Return all items in the given category (e.g. "Drinks")."""
-        raise NotImplementedError  # TODO (next step): implement filtering
+        """Return all items in the given category (e.g. "Drinks").
+
+        The match is case-insensitive so "drinks" and "Drinks" agree.
+        """
+        return [
+            item
+            for item in self.items
+            if item.category.lower() == category.lower()
+        ]
+
+    def sort_by_popularity(self) -> list[MenuItem]:
+        """Return the items most-popular-first, without mutating the menu."""
+        return sorted(
+            self.items,
+            key=lambda item: item.popularity_rating,
+            reverse=True,
+        )
 
 
 class Order:
@@ -59,8 +72,8 @@ class Order:
         self.items.append(item)
 
     def total_cost(self) -> float:
-        """Return the combined price of every item in the order."""
-        raise NotImplementedError  # TODO (next step): sum item prices
+        """Return the combined price of every item in the order (0 if empty)."""
+        return sum(item.price for item in self.items)
 
 
 class Customer:
@@ -75,5 +88,9 @@ class Customer:
         self.purchase_history.append(order)
 
     def is_real_user(self) -> bool:
-        """Return True if this customer has a verifiable purchase history."""
-        raise NotImplementedError  # TODO (next step): verification rule
+        """Return True if the customer has a name and at least one past order.
+
+        The spec verifies "real users" by name + past purchase history, so a
+        customer with no orders is treated as unverified.
+        """
+        return bool(self.name) and len(self.purchase_history) > 0
